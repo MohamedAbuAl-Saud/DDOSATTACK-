@@ -1,6 +1,5 @@
 requests
 flask 
-Flask
 threading
 time
 user_agent
