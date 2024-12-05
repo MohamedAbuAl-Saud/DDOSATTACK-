@@ -1,4 +1,4 @@
-# DF Attack Tool
+ DF Attack Tool
 
 DF Attack Tool is a powerful, parallel request-based attack tool that can be used for educational and testing purposes to simulate high traffic loads on a target server. It utilizes multiple threads to send requests with randomized IPs and user-agents to simulate traffic. 
 
@@ -22,5 +22,7 @@ DF Attack Tool is a powerful, parallel request-based attack tool that can be use
 
 1. Clone the repository or download the script:
    ```bash
-   git clone https://github.com/your-username/df-attack-tool.git
-   cd df-attack-tool
+   git clone https://github.com/MohamedAbuAl-Saud/DDOSATTACK_DF.git
+   cd DDOSATTACK_DF
+   chmod +x DDOSATTACK_DF.sh
+   bash DDOSATTACK_DF.sh
