@@ -24,5 +24,5 @@ DF Attack Tool is a powerful, parallel request-based attack tool that can be use
    ```bash
    git clone https://github.com/MohamedAbuAl-Saud/DDOSATTACK_DF.git
    cd DDOSATTACK_DF
-   chmod +x DDOSATTACK_DF.sh
-   bash DDOSATTACK_DF.sh
+   chmod +x DDOSATTACK.sh
+   bash DDOSATTACK.sh
