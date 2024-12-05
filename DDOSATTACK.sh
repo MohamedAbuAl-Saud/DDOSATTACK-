@@ -22,9 +22,9 @@ echo "██╔══██╗██╔════╝"
 echo "██║  ██║█████╗  "
 echo "██║  ██║██╔══╝  "
 echo "██████╔╝██"
-echo "╚═════╝ ╚══════╝"
+echo "╚═════╝ ╚═"
 echo -e "${YELLOW}------------------------------------${NC}"
-echo -e "${YELLOW}   Developed by @A_Y_TR             ${NC}"
+echo -e "${YELLOW}   Developed by:@A_Y_TR             ${NC}"
 echo -e "${YELLOW}------------------------------------${NC}"
 echo
 
