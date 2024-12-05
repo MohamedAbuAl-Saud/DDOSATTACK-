@@ -29,7 +29,7 @@ def notify_admin(user_id, username):
 import telebot
 from telebot import types
 
-bot_token = "7887541654:AAHS1MynRR8WMDM8j1dXV4vFo8-zWjBPCwE"
+bot_token = ""#توكنك هنا  معا القياده 😂
 bot = telebot.TeleBot(bot_token)
 Almunharif_url_002 = ""
 
