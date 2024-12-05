@@ -1,7 +1,0 @@
-requests
-flask 
-threading
-time
-user_agent
-pyTelegramBotAPI
-telebot
