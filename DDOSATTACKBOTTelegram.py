@@ -17,19 +17,19 @@ app = Flask(__name__)
 Almunharif_port_001 = 4000
 print('آلقيـــــــــــــــآدهہ‌‏ آلزعيـــم||DF♕')
 
-# حفظ معرف الادمن
+# هنا بقا ياض حط id بتاعك
 admin_id = 6125645260
 
-# دالة لإرسال تنبيه للإدمن عند دخول شخص جديد
+#  وهنا ياض لإرسال تنبيه للإدمن عند دخول شخص جديد
 def notify_admin(user_id, username):
     message = f'شخص جديد دخل إلى البوت:\nID: {user_id}\nUsername: @{username}'
     requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', data={'chat_id': admin_id, 'text': message})
 
-# استبدال الإدخال اليدوي بـ Telegram Bot
+
 import telebot
 from telebot import types
 
-bot_token = ""#توكنك هنا  معا القياده 😂
+bot_token = "" #حط توكن بوتك هنا ياض 
 bot = telebot.TeleBot(bot_token)
 Almunharif_url_002 = ""
 
@@ -117,7 +117,7 @@ def Almunharif_index_016():
         </html>
     ''', Almunharif_success_count_003=Almunharif_success_count_003, Almunharif_failure_count_004=Almunharif_failure_count_004)
 
-# تكامل مع Telegram Bot
+
 @bot.message_handler(commands=['start'])
 def handle_start(message):
     user_id = message.from_user.id
